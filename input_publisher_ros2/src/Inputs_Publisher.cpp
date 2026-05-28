@@ -43,12 +43,13 @@ int main(int argc, char **argv)
     
     rclcpp::init(argc,argv);    
     auto node = std::make_shared<inputs_publisher_class>();
-    rclcpp::Rate rate(200);
+    rclcpp::Rate rate(200); //5ms
 
     RCLCPP_INFO(node->get_logger(),"[Inputs] Inputs Publisher Node Initialized...");
     double wheel_angular_value=0.0;
     double pedal_left_value=0.0;
     double pedal_right_value=0.0;
+
     while(rclcpp::ok())
     { 
         buttonsWheel();
@@ -57,7 +58,12 @@ int main(int argc, char **argv)
         wheel_angular_value = wheelAngularValue();
 
         node->PublishData(pedal_left_value, pedal_right_value, wheel_angular_value);
-            
+
+        RCLCPP_INFO(node->get_logger(),"/////////////////////////////");
+        RCLCPP_INFO(node->get_logger(),"LPedal: %f", pedal_left_value);
+        RCLCPP_INFO(node->get_logger(),"RPedal: %f", pedal_right_value);
+        RCLCPP_INFO(node->get_logger(),"Steering: %f", wheel_angular_value);
+          
         rclcpp::spin_some(node);
 	    rate.sleep();
     }
