@@ -23,6 +23,7 @@ using namespace std::chrono_literals;
 
 #include <math.h>
 #include <cmath>
+#include <cstdlib>
 
 using std::placeholders::_1;
 using std::placeholders::_2;
@@ -50,3 +51,10 @@ class inputs_publisher_class : public rclcpp::Node {
  
 
 };
+
+void threadFunctionWheelButtons(){
+    while (true){
+        buttonsWheel();
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+}

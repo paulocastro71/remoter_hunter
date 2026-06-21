@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <thread>
 
 
 #define MAX_STEERING (M_PI/2 * 0.9999999)
@@ -44,9 +45,9 @@ void loopButtonsWheel(){
                     jsonObject["name"] = DEVICE_STEERING_WHEEL;
                     jsonObject["ts"] = ts;
                     std::string jsonString = jsonObject.dump();
-                    //std::cout<<jsonString<<std::endl;
                     
-                    //pubMQTT(config.remotePublicIP, PORT, "/input_peripheral", jsonString.c_str());
+                    
+                   
 
                     if(steeringWheelAngular.update(ev1)) return;
                     if(pedalLinearLeft.update(ev1)) return;
@@ -84,9 +85,6 @@ void loopButtonsWheel(){
                     jsonObject["name"] = DEVICE_STEERING_WHEEL;
                     jsonObject["ts"] = ts;
                     std::string jsonString = jsonObject.dump();
-                    //std::cout<<jsonString<<std::endl;
-
-                   // pubMQTT(config.remotePublicIP, PORT, "/input_peripheral", jsonString.c_str());
                     
                     if(steeringWheelAngular.update(ev2)) return;
                     if(pedalLinearLeft.update(ev2)) return;
@@ -122,12 +120,11 @@ void buttonsWheel(){
     static int lastSteeringWheelButton1=0;
     static int lastSteeringWheelButton2=0;
     static int lastSteeringWheelButton3=0;
-    //std::cout<<"buttons wheel"<<std::endl;
     
-
 }
 
 double pedalLeftVal(){return pedalLinearLeft.value;}
 double pedalRightVal(){return pedalLinearRight.value;}
 double wheelAngularValue(){return steeringWheelAngular.value;}
+
 

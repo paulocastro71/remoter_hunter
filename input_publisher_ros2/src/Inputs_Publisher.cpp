@@ -35,7 +35,6 @@ void inputs_publisher_class::PublishData(double throttle_val, double brake_val,d
     BrakeInputPub->publish(brake_msg);
     SteeringInputPub->publish(steering_msg);
 
-
 }
 
 int main(int argc, char **argv)
@@ -43,27 +42,38 @@ int main(int argc, char **argv)
     
     rclcpp::init(argc,argv);    
     auto node = std::make_shared<inputs_publisher_class>();
-    rclcpp::Rate rate(200); //5ms
+    rclcpp::Rate rate(400); //1ms
 
     RCLCPP_INFO(node->get_logger(),"[Inputs] Inputs Publisher Node Initialized...");
     double wheel_angular_value=0.0;
     double pedal_left_value=0.0;
     double pedal_right_value=0.0;
 
+    // buttonsWheel(); //read buttons and update values
+    std::thread threadWheelButtons([&]() {threadFunctionWheelButtons();});
+	threadWheelButtons.detach();
+
     while(rclcpp::ok())
     { 
-        buttonsWheel();
-        pedal_left_value = pedalLeftVal();
-        pedal_right_value = pedalRightVal();
-        wheel_angular_value = wheelAngularValue();
+       
 
-        node->PublishData(pedal_left_value, pedal_right_value, wheel_angular_value);
+        pedal_right_value = pedalRightVal(); //Right Side Pedal
+        pedal_left_value = pedalLeftVal(); //Left Side Pedal
+        wheel_angular_value = wheelAngularValue();  //Steering Wheel value
 
+        node->PublishData(pedal_right_value, pedal_left_value, wheel_angular_value); //Publish Values
+
+        
+        //clear terminal
+        //system("clear");
+
+        //Print values to terminal
         RCLCPP_INFO(node->get_logger(),"/////////////////////////////");
-        RCLCPP_INFO(node->get_logger(),"LPedal: %f", pedal_left_value);
-        RCLCPP_INFO(node->get_logger(),"RPedal: %f", pedal_right_value);
-        RCLCPP_INFO(node->get_logger(),"Steering: %f", wheel_angular_value);
-          
+        RCLCPP_INFO(node->get_logger(),"Left Pedal -> Backwards : %f", pedal_left_value);
+        RCLCPP_INFO(node->get_logger(),"Right Pedal -> Throttle : %f", pedal_right_value);
+        RCLCPP_INFO(node->get_logger(),"Steering : %f", wheel_angular_value);
+        
+        
         rclcpp::spin_some(node);
 	    rate.sleep();
     }

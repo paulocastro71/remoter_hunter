@@ -18,12 +18,12 @@ wheel_control_class::wheel_control_class()
         //Receive Emergency Brake from Joystick
         StopSub = this->create_subscription<std_msgs::msg::Bool>("joystick_stop_topic", 1, std::bind(&wheel_control_class::Stop_Callback, this, _1));
         
-        EnableACCSub = this->create_subscription<std_msgs::msg::Bool>("enable_acc_topic", 1, std::bind(&wheel_control_class::Enable_ACC_Callback, this, _1));
+        EnableACCSub = this->create_subscription<std_msgs::msg::Bool>("enable_acc_topic_wheel", 1, std::bind(&wheel_control_class::Enable_ACC_Callback, this, _1));
         DeactivateACCSub = this->create_subscription<std_msgs::msg::Bool>("deactivate_acc_topic", 1, std::bind(&wheel_control_class::Deactivate_ACC_Callback, this, _1));
 
 //PUBLISHER
         //Vel PUblisher
-        VelPublisher = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel",1);
+        VelPublisher = this->create_publisher<geometry_msgs::msg::Twist>("cmd_vel_leader",1);
         
         EnablePublisher = this->create_publisher<std_msgs::msg::Bool>("enableACC",1);
 
@@ -50,8 +50,9 @@ wheel_control_class::wheel_control_class()
         steering_angle = 0;
         linear_velocity = 0;
         angular_velocity = 0;
-        value_throttle=0;
-        value_steering=0;
+        value_throttle=255;
+        value_brake=255;
+        value_steering=32767;
         last_linear_velocity=0;
     
   
